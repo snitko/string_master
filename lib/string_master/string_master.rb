@@ -135,7 +135,7 @@ class StringMaster
   end
 
   def to_s
-    modified_string
+    modified_string.html_safe
   end
 
 end
