@@ -17,9 +17,9 @@ Jeweler::Tasks.new do |gem|
   gem.name = "string_master"
   gem.homepage = "http://github.com/snitko/string_master"
   gem.license = "MIT"
-  gem.summary = %Q{TODO: one-line summary of your gem}
-  gem.description = %Q{TODO: longer description of your gem}
-  gem.email = "subscribe@snitko.ru"
+  gem.summary = %Q{Most common string manipulations for a webapp}
+  gem.description = %Q{Because every time I create a new webapp, I think about how I should process user-generated content. Should convert urls to links and images? Should I allow certain tags? Should I convert all new lines to *br* tags? Well, now all that is as simple as calling a single method.}
+  gem.email = "roman.snitko@gmail.com"
   gem.authors = ["Roman Snitko"]
   # dependencies defined in Gemfile
 end
@@ -32,17 +32,8 @@ Rake::TestTask.new(:test) do |test|
   test.verbose = true
 end
 
-require 'rcov/rcovtask'
-Rcov::RcovTask.new do |test|
-  test.libs << 'test'
-  test.pattern = 'test/**/test_*.rb'
-  test.verbose = true
-  test.rcov_opts << '--exclude "gems/*"'
-end
 
-task :default => :test
-
-require 'rake/rdoctask'
+require 'rdoc/task'
 Rake::RDocTask.new do |rdoc|
   version = File.exist?('VERSION') ? File.read('VERSION') : ""
 
