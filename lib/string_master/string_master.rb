@@ -9,9 +9,6 @@ class StringMaster
   attr_reader(:modified_string)
   alias :string :modified_string
 
-  # Note that each parsing method in this class returns *self*,
-  # so that it's easy to chain parsing methods and literally
-  # construct the necessary result step by step.
   def initialize(string)
     @initial_string  = string
     @modified_string = string
@@ -135,6 +132,10 @@ class StringMaster
   def newlines_to_br
     @modified_string.gsub!("\n", "<br/>")
     self
+  end
+
+  def to_s
+    modified_string.html_safe
   end
 
 end
