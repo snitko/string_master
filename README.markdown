@@ -18,7 +18,7 @@ Usage
 
 Say you got this string
 
-    s = "Hello, glorious owner of the website\nI hope &lt;you&gt; like my message"
+    s = "Hello, glorious owner of the website\nI hope <b>you</b> like my message"
 
 Oh my god, what am I going to do with it?
 
@@ -30,7 +30,8 @@ Oh my god, what am I going to do with it?
 
 Result:
 
-    Hello, glorious owner of the website\nI hope &lt;you&gt; like my message
+    Hello, glorious owner of the website
+    I hope &lt;you&gt; like my message
 
 Fuck yeah.
 
