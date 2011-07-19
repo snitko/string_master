@@ -125,7 +125,7 @@ class StringMaster
   # Appends characters (if specified in :append) to the end of the cut string.
   def cut(length, cut_at, options = {})
     append = options[:append] || ''
-    @modified_string.size > (length) ? @modified_string = @modified_string.mb_chars[0...cut_at] + '...' : @modified_message
+    @modified_string.size > (length) ? @modified_string = @modified_string.mb_chars[0...cut_at] + append : @modified_message
     self
   end
 
