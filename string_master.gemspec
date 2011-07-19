@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{string_master}
-  s.version = "0.1.0"
+  s.version = "0.2.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.authors = [%q{Roman Snitko}]
-  s.date = %q{2011-06-20}
+  s.authors = ["Roman Snitko"]
+  s.date = %q{2011-07-19}
   s.description = %q{Because every time I create a new webapp, I think about how I should process user-generated content. Should convert urls to links and images? Should I allow certain tags? Should I convert all new lines to *br* tags? Well, now all that is as simple as calling a single method.}
   s.email = %q{roman.snitko@gmail.com}
   s.extra_rdoc_files = [
@@ -35,9 +35,9 @@ Gem::Specification.new do |s|
     "string_master.gemspec"
   ]
   s.homepage = %q{http://github.com/snitko/string_master}
-  s.licenses = [%q{MIT}]
-  s.require_paths = [%q{lib}]
-  s.rubygems_version = %q{1.8.5}
+  s.licenses = ["MIT"]
+  s.require_paths = ["lib"]
+  s.rubygems_version = %q{1.6.2}
   s.summary = %q{Most common string manipulations for a webapp}
 
   if s.respond_to? :specification_version then
