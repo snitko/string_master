@@ -10,8 +10,8 @@ class StringMaster
   alias :string :modified_string
 
   def initialize(string)
-    @initial_string  = string
-    @modified_string = string
+    @initial_string  = String.new(string.html_safe)
+    @modified_string = String.new(string.html_safe)
     yield(self) if block_given?
   end
 
