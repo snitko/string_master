@@ -34,15 +34,25 @@ describe StringMaster do
     parser.urls_to_links.string.should == '<a href="http://gyazo.com/a4c16e7a6009f40f29248ad4fed41bd3.png" >http://gyazo.com/a4c16e7a6009f40f29248ad4fed41bd3.png</a><br>'
   end
 
-  it "highlights code" do
-    begin
-      require 'uv'
-      parser = StringMaster.new('<code>print "hello, world!"</code>')
-      parser.highlight_code.string.should == '<pre class="active4d">print <span class="String"><span class="String">&quot;</span>hello, world!<span class="String">&quot;</span></span>' + "\n</pre>"
-    rescue LoadError
-      pending "This test is skipped because 'ultraviolet' gem is not installed. If you wish to highlight code in a string, install this gem manually. Note that it fails to build native extensions with ruby 1.9.x so it's only possible to use it with ruby 1.8.x"
-    end
+  it "wraps code in <code> tags" do
+    code = <<CODE
+I have a piece of code
+    puts "hello world"
+    exit
+and here's what my code looks like.
+CODE
+    StringMaster.new(code).wrap_code.should == <<WRAPPED_CODE
+I have a piece of code
+<code>puts "hello world"
+exit</code>
+and here's what my code looks like.
+WRAPPED_CODE
+  end
 
+  it "wraps inline code into <span class=\"inlineCode\"></span> tags" do
+    code = "I have a variable called `a` and it has a `nil` value"
+    parser = StringMaster.new(code)
+    parser.wrap_inline_code.should == "I have a variable called <span class=\"inlineCode\">a</span> and it has a <span class=\"inlineCode\">nil</span> value"
   end
 
   it "breaks long words" do

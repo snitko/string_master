@@ -68,41 +68,6 @@ class StringMaster
     self
   end
 
-  # Highlights code using 'uv' library.
-  # Make sure you have ultraviolet gem installed.
-  def highlight_code(options={})
-    begin
-      require 'uv'
-    rescue LoadError
-      raise LoadError, "Gem 'ultraviolet' is required to highlight code. Please install the gem. Note that it fails to build native extensions with ruby 1.9.x so it's only possible to use it with ruby 1.8.x\n\n "
-    end
-
-    wrap_with = options[:wrap_with] || ['','']
-    text = @modified_string
-
-    languages_syntax_list = File.readlines(
-      File.expand_path(File.dirname(__FILE__) + '/../config/languages_syntax_list')
-    ).map { |l| l.chomp }
-
-    text.gsub!(/<code(\s*?lang=["']?(.*?)["']?)?>(.*?)<\/code>/) do
-      if languages_syntax_list.include?($2)
-        lang = $2
-      else
-        lang = 'ruby'
-      end
-      unless $3.blank?
-        result = Uv.parse($3.gsub('<br/>', "\n").gsub('&lt;', '<').gsub('&gt;', '>').gsub('&quot;', '"'), 'xhtml', lang, false, 'active4d')
-        "#{wrap_with[0].gsub('$lang', lang)}#{result}#{wrap_with[1]}"
-      end
-    end
-
-    # TODO: split string longer than 80 characters
-
-    @modified_string = text
-    self
-
-  end
-
   # Breaks words that are longer than 'length'
   def break_long_words(length=75, &block)
     @modified_string.gsub!(/<a [^>]+>|<img [^>]+>|([^\s^\n^\^^\A^\t^\r<]{#{length},}?)|<\/a>/) do |s|
@@ -132,6 +97,34 @@ class StringMaster
   def newlines_to_br
     @modified_string.gsub!("\n", "<br/>")
     self
+  end
+
+  # Finds lines of text that satisfy a 'regexp' and wraps them into an
+  # opening and closing 'tag'. Best example of usage is #wrap_code.
+  def wrap_lines(tag, regexp)
+    code_open = false; result = ""
+    @modified_string.each_line do |line|
+      if line =~ /\A\s{4}/
+        result += "<#{tag}>" unless code_open
+        code_open = true
+        result += line.sub(regexp, '')
+      else
+        result.chomp!
+        result += "</#{tag}>\n" if code_open
+        code_open = false
+        result += line
+      end
+    end
+    @modified_string = result
+  end
+
+  # Finds all lines that start with 4 spaces and wraps them into <code> tags.
+  def wrap_code
+    wrap_lines("code", /\A\s{4}/)
+  end
+
+  def wrap_inline_code(opening_tag="<span class=\"inlineCode\">", closing_tag="</span>")
+    @modified_string.gsub!(/`(.+?)`/, opening_tag + '\1' + closing_tag)
   end
 
   def to_s
