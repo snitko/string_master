@@ -37,4 +37,4 @@ Fuck yeah.
 
 More
 ---------------
-Please read RDoc to see all of the available methods of StringMaster class: http://rdoc.info/github/snitko/string_master/master/StringMaster
+Please read RDoc to see all of the available methods of StringMaster class: http://rdoc.info/gems/string_master/frames
