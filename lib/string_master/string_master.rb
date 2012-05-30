@@ -116,15 +116,17 @@ class StringMaster
       end
     end
     @modified_string = result
+    self
   end
 
   # Finds all lines that start with 4 spaces and wraps them into <code> tags.
   def wrap_code
-    wrap_lines("code", /\A\s{4}/)
+    wrap_lines("code", /\A\s{4}/) # wrap lines already returns `self`
   end
 
   def wrap_inline_code(opening_tag="<span class=\"inlineCode\">", closing_tag="</span>")
     @modified_string.gsub!(/`(.+?)`/, opening_tag + '\1' + closing_tag)
+    self
   end
 
   def to_s

@@ -41,7 +41,7 @@ I have a piece of code
     exit
 and here's what my code looks like.
 CODE
-    StringMaster.new(code).wrap_code.should == <<WRAPPED_CODE
+    StringMaster.new(code).wrap_code.to_s.should == <<WRAPPED_CODE
 I have a piece of code
 <code>puts "hello world"
 exit</code>
@@ -52,7 +52,7 @@ WRAPPED_CODE
   it "wraps inline code into <span class=\"inlineCode\"></span> tags" do
     code = "I have a variable called `a` and it has a `nil` value"
     parser = StringMaster.new(code)
-    parser.wrap_inline_code.should == "I have a variable called <span class=\"inlineCode\">a</span> and it has a <span class=\"inlineCode\">nil</span> value"
+    parser.wrap_inline_code.to_s.should == "I have a variable called <span class=\"inlineCode\">a</span> and it has a <span class=\"inlineCode\">nil</span> value"
   end
 
   it "breaks long words" do
