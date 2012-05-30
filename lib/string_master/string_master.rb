@@ -130,8 +130,8 @@ class StringMaster
   # Preserves whitespace within a given tag. Each occurence of 2 or more spaces
   # is transformed into a &nbsp; entities.
   def preserve_whitespace_within(tag)
-    @modified_string.gsub!(/<#{tag}>.+?<\/#{tag}>/) do |match|
-      match.gsub(/\s\s+/) { |m| "&nbsp;"*m.length }
+    @modified_string.gsub!(/<#{tag}>(.|\n)+?<\/#{tag}>/) do |match|
+      match.gsub(/( )( )+/) { |m| "&nbsp;"*m.length }
     end
     self
   end

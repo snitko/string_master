@@ -46,8 +46,8 @@ CODE
     StringMaster.new(code).wrap_code.to_s.should == <<WRAPPED_CODE
 I have a piece of code
 <code>def say_hello
-  puts "hello world"
-  return true
+&nbsp;&nbsp;puts "hello world"
+&nbsp;&nbsp;return true
 end</code>
 and here's what my code looks like.
 WRAPPED_CODE
