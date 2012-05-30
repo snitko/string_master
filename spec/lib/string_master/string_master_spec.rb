@@ -37,14 +37,18 @@ describe StringMaster do
   it "wraps code in <code> tags" do
     code = <<CODE
 I have a piece of code
-    puts "hello world"
-    exit
+    def say_hello
+      puts "hello world"
+      return true
+    end
 and here's what my code looks like.
 CODE
     StringMaster.new(code).wrap_code.to_s.should == <<WRAPPED_CODE
 I have a piece of code
-<code>puts "hello world"
-exit</code>
+<code>def say_hello
+  puts "hello world"
+  return true
+end</code>
 and here's what my code looks like.
 WRAPPED_CODE
   end
@@ -86,7 +90,5 @@ WRAPPED_CODE
     parser.string.should ==
       "<img src=\"http://images.com/image.jpg\" alt=\"\" /> <b>Hello <a href=\"http://url.com\" target=\"_blank\">http://url.com</a> </b>"
   end
-
-
 
 end

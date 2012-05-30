@@ -120,8 +120,20 @@ class StringMaster
   end
 
   # Finds all lines that start with 4 spaces and wraps them into <code> tags.
+  # It also transforms each occurence of 2 or more spaces into an &nbsp; entity,
+  # which is available as a standalone method #preserve_whitespace 
   def wrap_code
-    wrap_lines("code", /\A\s{4}/) # wrap lines already returns `self`
+    wrap_lines("code", /\A\s{4}/) 
+    preserve_whitespace_within("code") # already returns `self`
+  end
+
+  # Preserves whitespace within a given tag. Each occurence of 2 or more spaces
+  # is transformed into a &nbsp; entities.
+  def preserve_whitespace_within(tag)
+    @modified_string.gsub!(/<#{tag}>.+?<\/#{tag}>/) do |match|
+      match.gsub(/\s\s+/) { |m| "&nbsp;"*m.length }
+    end
+    self
   end
 
   def wrap_inline_code(opening_tag="<span class=\"inlineCode\">", closing_tag="</span>")
