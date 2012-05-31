@@ -101,6 +101,11 @@ class StringMaster
 
   # Finds lines of text that satisfy a 'regexp' and wraps them into an
   # opening and closing 'tag'. Best example of usage is #wrap_code.
+  #
+  # Also receives an option :remove_newlines (default is false)
+  # which removes \n around the tag that wraps the lines of text. Useful if
+  # you're using this method with #newlines_to_br to avoid extra space that may or
+  # may not be in the user's input.
   def wrap_lines(tag, regexp, options={remove_newlines: false})
     code_tag = nil; result = ""
     @modified_string.each_line do |line|
