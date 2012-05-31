@@ -44,12 +44,10 @@ I have a piece of code
 and here's what my code looks like.
 CODE
     StringMaster.new(code).wrap_code.to_s.should == <<WRAPPED_CODE
-I have a piece of code
-<code>def say_hello
+I have a piece of code<code>def say_hello
 &nbsp;&nbsp;puts "hello world"
 &nbsp;&nbsp;return true
-end</code>
-and here's what my code looks like.
+end</code>and here's what my code looks like.
 WRAPPED_CODE
   end
 

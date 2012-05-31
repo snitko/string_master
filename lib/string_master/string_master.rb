@@ -101,19 +101,25 @@ class StringMaster
 
   # Finds lines of text that satisfy a 'regexp' and wraps them into an
   # opening and closing 'tag'. Best example of usage is #wrap_code.
-  def wrap_lines(tag, regexp)
-    code_open = false; result = ""
+  def wrap_lines(tag, regexp, options={remove_newlines: false})
+    code_tag = nil; result = ""
     @modified_string.each_line do |line|
       if line =~ regexp
-        result += "<#{tag}>" unless code_open
-        code_open = true
+        unless code_tag == :opened
+          result.chomp! if options[:remove_newlines]
+          result += "<#{tag}>" 
+          code_tag = :opened
+        end
         result += line.sub(regexp, '')
       else
-        if code_open
+        if code_tag == :opened
+          code_tag = :closed
           result.chomp!
-          result += "</#{tag}>\n" 
+          result += "</#{tag}>"
+        elsif code_tag == :closed
+          code_tag = nil
+          result.chomp! if options[:remove_newlines]
         end
-        code_open = false
         result += line
       end
     end
@@ -125,7 +131,7 @@ class StringMaster
   # It also transforms each occurence of 2 or more spaces into an &nbsp; entity,
   # which is available as a standalone method #preserve_whitespace 
   def wrap_code
-    wrap_lines("code", /\A\s{4}/) 
+    wrap_lines("code", /\A\s{4}/, remove_newlines: true) 
     preserve_whitespace_within("code") # already returns `self`
   end
 
