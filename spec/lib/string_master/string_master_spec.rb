@@ -91,4 +91,9 @@ WRAPPED_CODE
       "<img src=\"http://images.com/image.jpg\" alt=\"\" /> <b>Hello <a href=\"http://url.com\" target=\"_blank\">http://url.com</a> </b>"
   end
 
+  it "replaces newline characters with <br/> tags" do
+    parser = StringMaster.new("This is quite a\n long text")
+    parser.wrap_code.newlines_to_br.to_s.should == "This is quite a<br/> long text"
+  end
+
 end

@@ -104,13 +104,15 @@ class StringMaster
   def wrap_lines(tag, regexp)
     code_open = false; result = ""
     @modified_string.each_line do |line|
-      if line =~ /\A\s{4}/
+      if line =~ regexp
         result += "<#{tag}>" unless code_open
         code_open = true
         result += line.sub(regexp, '')
       else
-        result.chomp!
-        result += "</#{tag}>\n" if code_open
+        if code_open
+          result.chomp!
+          result += "</#{tag}>\n" 
+        end
         code_open = false
         result += line
       end
