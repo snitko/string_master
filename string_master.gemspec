@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "string_master"
-  s.version = "0.3.4"
+  s.version = "0.3.5"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Roman Snitko"]
-  s.date = "2012-05-30"
+  s.date = "2012-05-31"
   s.description = "Because every time I create a new webapp, I think about how I should process user-generated content. Should convert urls to links and images? Should I allow certain tags? Should I convert all new lines to *br* tags? Well, now all that is as simple as calling a single method."
   s.email = "roman.snitko@gmail.com"
   s.extra_rdoc_files = [
