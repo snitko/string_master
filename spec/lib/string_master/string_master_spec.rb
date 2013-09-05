@@ -51,6 +51,22 @@ end</code>and here's what my code looks like.
 WRAPPED_CODE
   end
 
+  it "wraps code in <code> and adds a closing tag even if regexp for closing tag doesn't match" do
+    code = <<CODE
+I have a piece of code
+    def say_hello
+      puts "hello world"
+      return true
+    end
+CODE
+    StringMaster.new(code).wrap_code.to_s.should == <<WRAPPED_CODE
+I have a piece of code<code>def say_hello
+&nbsp;&nbsp;puts "hello world"
+&nbsp;&nbsp;return true
+end</code>
+WRAPPED_CODE
+  end
+
   it "wraps inline code into <span class=\"inlineCode\"></span> tags" do
     code = "I have a variable called `a` and it has a `nil` value"
     parser = StringMaster.new(code)

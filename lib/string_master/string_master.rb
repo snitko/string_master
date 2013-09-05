@@ -128,6 +128,13 @@ class StringMaster
         result += line
       end
     end
+    
+    # Make sure there's always a closing tag
+    if code_tag == :opened
+      result.chomp!
+      result += "</#{tag}>\n" 
+    end
+
     @modified_string = result
     self
   end
