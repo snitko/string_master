@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "string_master"
-  s.version = "0.3.6"
+  s.version = "0.3.7"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Roman Snitko"]
-  s.date = "2012-05-31"
+  s.date = "2013-09-05"
   s.description = "Because every time I create a new webapp, I think about how I should process user-generated content. Should convert urls to links and images? Should I allow certain tags? Should I convert all new lines to *br* tags? Well, now all that is as simple as calling a single method."
   s.email = "roman.snitko@gmail.com"
   s.extra_rdoc_files = [
@@ -37,11 +37,11 @@ Gem::Specification.new do |s|
   s.homepage = "http://github.com/snitko/string_master"
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
-  s.rubygems_version = "1.8.21"
+  s.rubygems_version = "2.0.3"
   s.summary = "Most common string manipulations for a webapp"
 
   if s.respond_to? :specification_version then
-    s.specification_version = 3
+    s.specification_version = 4
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<actionpack>, [">= 0"])
