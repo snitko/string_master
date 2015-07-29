@@ -157,7 +157,13 @@ class StringMaster
   end
 
   def wrap_inline_code(opening_tag="<span class=\"inlineCode\">", closing_tag="</span>")
-    @modified_string.gsub!(/`(.+?)`/, opening_tag + '\1' + closing_tag)
+    @modified_string.gsub!(/`(.+?)`/m, opening_tag + '\1' + closing_tag)
+    self
+  end
+  
+  # Same as wrap_inline_code, but spans across multiplelines
+  def wrap_backticks_code(opening_tag="<code>", closing_tag="</code>")
+    @modified_string.gsub!(/`(.+?)`/m, opening_tag + '\1' + closing_tag)
     self
   end
 

@@ -73,6 +73,12 @@ WRAPPED_CODE
     parser.wrap_inline_code.to_s.should == "I have a variable called <span class=\"inlineCode\">a</span> and it has a <span class=\"inlineCode\">nil</span> value"
   end
 
+  it "wraps code in backticks stretched across multiple lines" do
+    code = "`hello\nworld`"
+    parser = StringMaster.new(code)
+    parser.wrap_backticks_code.to_s.should == "<code>hello\nworld</code>"
+  end
+
   it "breaks long words" do
     long_string = 'l'; 1.upto(80) { |i| long_string << "o" }; long_string << "ng"
     parser = StringMaster.new(long_string)
