@@ -9,9 +9,11 @@ describe StringMaster do
 
   it "escapes html except for some of the allowed tags" do
     parser = StringMaster.new('<img src="#" style="border: solid 1px green;"><b>Hello</b>')
-    parser.html_escape(:except => %w(img)).string.should == '<img>&lt;b&gt;Hello&lt;/b&gt;'
+    parser.html_escape(:except => %w(img)).string.should == '<img src="#">&lt;b&gt;Hello&lt;/b&gt;'
     parser = StringMaster.new('<i>hello</i> <b>world</b>')
     parser.html_escape(:except => %w(b)).to_s.should == '&lt;i&gt;hello&lt;/i&gt; <b>world</b>'
+    parser = StringMaster.new('<a href="http://google.com">hello</a> <b>world</b>')
+    parser.html_escape(:except => %w(a)).to_s.should == '<a href="http://google.com">hello</a> &lt;b&gt;world&lt;/b&gt;'
   end
 
   it "makes images of urls that end with .jpg and other image extensions" do

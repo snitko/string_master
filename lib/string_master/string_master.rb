@@ -36,7 +36,7 @@ class StringMaster
     @modified_string.gsub!(/<\/?([a-zA-Z0-9]*?)(\s[^>]*?)?>/) do |tag|
       if except.include?($1)
         # sanitize attributes
-        tag.gsub(/(\s.+?)=('|").*?\2(?=.*?>)/) do |a|
+        tag.gsub(/\s(.+?)=('|").*?\2(?=.*?>)/) do |a|
           ["href", "src", "lang"].include?($1) ? a : ""
         end
       else
