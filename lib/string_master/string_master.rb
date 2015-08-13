@@ -33,10 +33,12 @@ class StringMaster
   def html_escape(options={})
     except = options[:except] || %w()
     close_tags
-    @modified_string.gsub!(/<\/?([a-zA-Z0-9]*?)(\s[^>]*)?>/) do |tag|
+    @modified_string.gsub!(/<\/?([a-zA-Z0-9]*?)(\s[^>]*?)?>/) do |tag|
       if except.include?($1)
-        # Really sanitizes attributes only here
-        sanitize(tag, :tags => except, :attributes => %w(href src lang))
+        # sanitize attributes
+        tag.gsub(/(\s.+?)=('|").*?\2(?=.*?>)/) do |a|
+          ["href", "src", "lang"].include?($1) ? a : ""
+        end
       else
         h(tag)
       end
