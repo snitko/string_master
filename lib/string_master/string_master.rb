@@ -51,8 +51,8 @@ class StringMaster
     wrap_with    = options[:wrap_with]    || ['','']
     html_options = options[:html_options] || ''
     @modified_string.gsub!(
-      /(\s|^|\A|\n|\t|\r)(http:\/\/.*?\.(jpg|jpeg|png|gif|JPG|JPEG|PNG|GIF))([,.])?(\s|$|\n|\Z|\t|\r)/,
-      "#{wrap_with[0]}<img src=\"\\2\" alt=\"\" #{html_options}/>\\5#{wrap_with[1]}"
+      /(\s|^|\A|\n|\t|\r)((http|https):\/\/.*?\.(jpg|jpeg|png|gif|JPG|JPEG|PNG|GIF))([,.])?(\s|$|\n|\Z|\t|\r)/,
+      "#{wrap_with[0]}<img src=\"\\2\" alt=\"\" #{html_options}/>\\6#{wrap_with[1]}"
     )
     self
   end
@@ -64,8 +64,8 @@ class StringMaster
     wrap_with = options[:wrap_with] || ['','']
     html_options = options[:html_options] || ''
     @modified_string.gsub!(
-      /(\s|^|\A|\n|\t|\r)(http:\/\/.*?)([,.])?(\s|$|\n|\Z|\t|\r|<)/,
-      '\1<a href="\2" ' + html_options + '>\2</a>\3\4'
+      /(\s|^|\A|\n|\t|\r)((http|https):\/\/.*?)([,.])?(\s|$|\n|\Z|\t|\r|<)/,
+      '\1<a href="\2" ' + html_options + '>\2</a>\4\5'
     )
     self
   end

@@ -14,12 +14,19 @@ describe StringMaster do
     parser.html_escape(:except => %w(b)).to_s.should == '&lt;i&gt;hello&lt;/i&gt; <b>world</b>'
     parser = StringMaster.new('<a href="http://google.com">hello</a> <b>world</b>')
     parser.html_escape(:except => %w(a)).to_s.should == '<a href="http://google.com">hello</a> &lt;b&gt;world&lt;/b&gt;'
+    parser = StringMaster.new('<a href="https://google.com">hello</a> <b>world</b>')
+    parser.html_escape(:except => %w(a)).to_s.should == '<a href="https://google.com">hello</a> &lt;b&gt;world&lt;/b&gt;'
   end
 
   it "makes images of urls that end with .jpg and other image extensions" do
     parser = StringMaster.new('Hello, this is my photo http://image.com/image.jpg, yeah baby')
     parser.urls_to_images(:wrap_with => ['<p>', '</p>'], :html_options => 'class="ico"').string.should == 
       'Hello, this is my photo<p><img src="http://image.com/image.jpg" alt="" class="ico"/> </p>yeah baby'
+
+    # use https
+    parser = StringMaster.new('Hello, this is my photo https://image.com/image.jpg, yeah baby')
+    parser.urls_to_images(:wrap_with => ['<p>', '</p>'], :html_options => 'class="ico"').string.should == 
+      'Hello, this is my photo<p><img src="https://image.com/image.jpg" alt="" class="ico"/> </p>yeah baby'
   end
 
   it "makes links of urls" do
@@ -36,6 +43,10 @@ describe StringMaster do
     # example 3
     parser = StringMaster.new('http://gyazo.com/a4c16e7a6009f40f29248ad4fed41bd3.png<br>')
     parser.urls_to_links.string.should == '<a href="http://gyazo.com/a4c16e7a6009f40f29248ad4fed41bd3.png" >http://gyazo.com/a4c16e7a6009f40f29248ad4fed41bd3.png</a><br>'
+
+    # example 4, with https
+    parser = StringMaster.new('https://gyazo.com/a4c16e7a6009f40f29248ad4fed41bd3.png<br>')
+    parser.urls_to_links.string.should == '<a href="https://gyazo.com/a4c16e7a6009f40f29248ad4fed41bd3.png" >https://gyazo.com/a4c16e7a6009f40f29248ad4fed41bd3.png</a><br>'
   end
 
   it "wraps code in <code> tags" do
@@ -113,6 +124,12 @@ WRAPPED_CODE
     end
     parser.string.should ==
       "<img src=\"http://images.com/image.jpg\" alt=\"\" /> <b>Hello <a href=\"http://url.com\" target=\"_blank\">http://url.com</a> </b>"
+
+    parser = StringMaster.new('https://images.com/image.jpg <b>Hello https://url.com </b>') do |p|
+      p.urls_to_images.urls_to_links(:html_options => 'target="_blank"')
+    end
+    parser.string.should ==
+      "<img src=\"https://images.com/image.jpg\" alt=\"\" /> <b>Hello <a href=\"https://url.com\" target=\"_blank\">https://url.com</a> </b>"
   end
 
   it "replaces newline characters with <br/> tags" do
