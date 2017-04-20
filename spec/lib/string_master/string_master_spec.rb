@@ -16,6 +16,12 @@ describe StringMaster do
     parser.html_escape(:except => %w(a)).to_s.should == '<a href="http://google.com">hello</a> &lt;b&gt;world&lt;/b&gt;'
     parser = StringMaster.new('<a href="https://google.com">hello</a> <b>world</b>')
     parser.html_escape(:except => %w(a)).to_s.should == '<a href="https://google.com">hello</a> &lt;b&gt;world&lt;/b&gt;'
+
+    parser = StringMaster.new('xsstest<input/onfocus=prompt(document.cookie) autofocus>')
+    parser.html_escape.to_s.should == 'xsstest&lt;input/onfocus=prompt(document.cookie) autofocus&gt;'
+
+    parser = StringMaster.new('xsstest<input/onfocus=prompt(document.cookie)autofocus>')
+    parser.html_escape.to_s.should == 'xsstest&lt;input/onfocus=prompt(document.cookie)autofocus&gt;'
   end
 
   it "makes images of urls that end with .jpg and other image extensions" do
