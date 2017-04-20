@@ -37,7 +37,7 @@ class StringMaster
       if except.include?($1)
         # sanitize attributes
         tag.gsub(/\s(.+?)=('|").*?\2(?=.*?>)/) do |a|
-          ["href", "src", "lang"].include?($1) ? a : ""
+          ["href", "src", "lang", "onfocus", "autofocus"].include?($1) ? a : ""
         end
       else
         h(tag)
