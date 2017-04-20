@@ -29,6 +29,12 @@ describe StringMaster do
     parser = StringMaster.new('xsstest"><input/onfocus=prompt() autofocus /=')
     parser.html_escape.to_s.should == 'xsstest">&lt;input/onfocus=prompt() autofocus /='
 
+    parser = StringMaster.new('xsstest"><input/onfocus=prompt() autofocus /= <img>')
+    parser.html_escape.to_s.should == 'xsstest">&lt;input/onfocus=prompt() autofocus /= &lt;img&gt;'
+
+    parser = StringMaster.new('xsstest"><input/onfocus=prompt() autofocus /= <img>')
+    parser.html_escape(except: %w(img)).to_s.should == 'xsstest">&lt;input/onfocus=prompt() autofocus /= &lt;img&gt;'
+
     parser = StringMaster.new('<img onload="do_something()">')
     parser.html_escape(except: %w(img)).to_s.should == '<img>'
   end
