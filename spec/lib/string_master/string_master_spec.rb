@@ -25,6 +25,9 @@ describe StringMaster do
 
     parser = StringMaster.new('xsstest<input/onfocus=prompt(document.cookie)autofocus>')
     parser.html_escape.to_s.should == 'xsstest&lt;input/onfocus=prompt(document.cookie)autofocus&gt;'
+
+    parser = StringMaster.new('xsstest"><input/onfocus=prompt() autofocus /=')
+    parser.html_escape.to_s.should == 'xsstest">&lt;input/onfocus=prompt() autofocus /='
   end
 
   it "makes images of urls that end with .jpg and other image extensions" do

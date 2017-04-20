@@ -43,6 +43,8 @@ class StringMaster
         h(tag)
       end
     end
+    # Convert all unclosed left tag brackets (<) into &lt;
+    @modified_string.gsub!(/(<)([^>]*\Z)/, '&lt;\2')
     self
   end
 
