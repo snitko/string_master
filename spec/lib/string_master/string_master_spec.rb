@@ -27,13 +27,22 @@ describe StringMaster do
     parser.html_escape.to_s.should == 'xsstest&lt;input/onfocus=prompt(document.cookie)autofocus&gt;'
 
     parser = StringMaster.new('xsstest"><input/onfocus=prompt() autofocus /=')
-    parser.html_escape.to_s.should == 'xsstest">&lt;input/onfocus=prompt() autofocus /='
+    parser.html_escape.to_s.should == 'xsstest"&gt;&lt;input/onfocus=prompt() autofocus /='
 
     parser = StringMaster.new('xsstest"><input/onfocus=prompt() autofocus /= <img>')
-    parser.html_escape.to_s.should == 'xsstest">&lt;input/onfocus=prompt() autofocus /= &lt;img&gt;'
+    parser.html_escape.to_s.should == 'xsstest"&gt;&lt;input/onfocus=prompt() autofocus /= &lt;img&gt;'
 
     parser = StringMaster.new('xsstest"><input/onfocus=prompt() autofocus /= <img>')
-    parser.html_escape(except: %w(img)).to_s.should == 'xsstest">&lt;input/onfocus=prompt() autofocus /= &lt;img&gt;'
+    parser.html_escape(except: %w(img)).to_s.should == 'xsstest"&gt;&lt;input/onfocus=prompt() autofocus /= &lt;img&gt;'
+
+    parser = StringMaster.new('aaaa"<input/autofocus/onfocus=prompt(\'textxss\')//<>>')
+    parser.html_escape(except: %w(img)).to_s.should == 'aaaa"&lt;input/autofocus/onfocus=prompt(&#39;textxss&#39;)//&lt;&gt;&gt;'
+
+    parser = StringMaster.new('aaaa"<<<<<input/autofocus/onfocus=prompt(\'textxss\')//<<<<>>>>>')
+    parser.html_escape(except: %w(img)).to_s.should == 'aaaa"&lt;&lt;&lt;&lt;&lt;input/autofocus/onfocus=prompt(&#39;textxss&#39;)//&lt;&lt;&lt;&lt;&gt;>>>&gt;'
+
+    parser = StringMaster.new('aaaa"<input<<<<input/autofocus/onfocus=prompt(\'textxss\')//<<<<hello>>>>>')
+    parser.html_escape(except: %w(img)).to_s.should == 'aaaa"&lt;input&lt;&lt;&lt;&lt;input/autofocus/onfocus=prompt(&#39;textxss&#39;)//&lt;&lt;&lt;&lt;hello&gt;>>>&gt;&lt;/hello&gt;'
 
     parser = StringMaster.new('<img onload="do_something()">')
     parser.html_escape(except: %w(img)).to_s.should == '<img>'

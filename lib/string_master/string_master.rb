@@ -33,7 +33,7 @@ class StringMaster
   def html_escape(options={})
     except = options[:except] || %w()
     close_tags
-    @modified_string.gsub!(/<\/?([^<]*?)(\s[^>]*?)?\/?>/) do |tag|
+    @modified_string.gsub!(/<\/?(.*?)(\s.*?)?\/?>/) do |tag|
       if except.include?($1)
         # sanitize attributes
         tag.gsub(/\s(.+?)=('|").*?\2(?=.*?>)/) do |a|
@@ -44,7 +44,9 @@ class StringMaster
       end
     end
     # Convert all unclosed left tag brackets (<) into &lt;
-    @modified_string.gsub!(/(<)([^>]*\Z)/, '&lt;\2')
+    @modified_string.gsub!(/<+([^>]*)\Z/, '&lt;\1')
+    # Convert all unopened right tag brackets (<) into &lt;
+    @modified_string.gsub!(/\A([^<]*)>+/, '\1&gt;')
     self
   end
 
