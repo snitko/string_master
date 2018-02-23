@@ -2,7 +2,7 @@ class StringMaster
 
   require "erb"
   require "action_view"
- 
+
   include ERB::Util
   include ActionView::Helpers
 
@@ -23,7 +23,7 @@ class StringMaster
     text.scan(/<([a-zA-Z0-9]+?)(\s[^>]*)?>/).each { |t| open_tags.unshift(t[0]) }
     text.scan(/<\/\s*?([a-zA-Z0-9]+)\s*?>/).each  { |t| open_tags.slice!(open_tags.index(t[0])) unless open_tags.index(t[0]).nil? }
     open_tags.each { |t| text += "</#{t}>" unless %w(img br hr).include?(t.to_s) }
-    
+
     @modified_string = text
     return self
   end
@@ -45,7 +45,7 @@ class StringMaster
     end
     # Convert all unclosed left tag brackets (<) into &lt;
     @modified_string.gsub!(/<+([^>]*)\Z/, '&lt;\1')
-    # Convert all unopened right tag brackets (<) into &lt;
+    # Convert all unopened right tag brackets (>) into &gt;
     @modified_string.gsub!(/\A([^<]*)>+/, '\1&gt;')
     self
   end
@@ -76,7 +76,7 @@ class StringMaster
 
   # Breaks words that are longer than 'length'
   def break_long_words(length=75, break_char=" ", &block)
-    @modified_string.gsub!(/<a [^>]+>|<img [^>]+>|([^\s^\n^\^^\A^\t^\r<]{#{length},}?)|<\/a>/) do |s|
+    @modified_string.gsub!(/https?:\/\/\S+|<a [^>]+>|<img [^>]+>|([^\s^\n^\^^\A^\t^\r<]{#{length},}?)|<\/a>/) do |s|
       if $1
         ns = block_given? ? yield($1) : $1
         last_pos, result_string = 0, ''
@@ -118,7 +118,7 @@ class StringMaster
       if line =~ regexp
         unless code_tag == :opened
           result.chomp! if options[:remove_newlines]
-          result += "<#{tag}>" 
+          result += "<#{tag}>"
           code_tag = :opened
         end
         result += line.sub(regexp, '')
@@ -134,11 +134,11 @@ class StringMaster
         result += line
       end
     end
-    
+
     # Make sure there's always a closing tag
     if code_tag == :opened
       result.chomp!
-      result += "</#{tag}>\n" 
+      result += "</#{tag}>\n"
     end
 
     @modified_string = result
@@ -147,9 +147,9 @@ class StringMaster
 
   # Finds all lines that start with 4 spaces and wraps them into <code> tags.
   # It also transforms each occurence of 2 or more spaces into an &nbsp; entity,
-  # which is available as a standalone method #preserve_whitespace 
+  # which is available as a standalone method #preserve_whitespace
   def wrap_code
-    wrap_lines("code", /\A\s{4}/, remove_newlines: true) 
+    wrap_lines("code", /\A\s{4}/, remove_newlines: true)
     preserve_whitespace_within("code") # already returns `self`
   end
 
@@ -166,7 +166,7 @@ class StringMaster
     @modified_string.gsub!(/`(.+?)`/m, opening_tag + '\1' + closing_tag)
     self
   end
-  
+
   # Same as wrap_inline_code, but spans across multiplelines
   def wrap_backticks_code(opening_tag="<code>", closing_tag="</code>")
     @modified_string.gsub!(/`(.+?)`/m, opening_tag + '\1' + closing_tag)

@@ -1,7 +1,7 @@
 require "spec_helper"
 
 describe StringMaster do
-  
+
   it "closes unclosed tags" do
     parser = StringMaster.new("<b>Hello,<i>world</b>")
     parser.close_tags.string.should == '<b>Hello,<i>world</b></i>'
@@ -50,12 +50,12 @@ describe StringMaster do
 
   it "makes images of urls that end with .jpg and other image extensions" do
     parser = StringMaster.new('Hello, this is my photo http://image.com/image.jpg, yeah baby')
-    parser.urls_to_images(:wrap_with => ['<p>', '</p>'], :html_options => 'class="ico"').string.should == 
+    parser.urls_to_images(:wrap_with => ['<p>', '</p>'], :html_options => 'class="ico"').string.should ==
       'Hello, this is my photo<p><img src="http://image.com/image.jpg" alt="" class="ico"/> </p>yeah baby'
 
     # use https
     parser = StringMaster.new('Hello, this is my photo https://image.com/image.jpg, yeah baby')
-    parser.urls_to_images(:wrap_with => ['<p>', '</p>'], :html_options => 'class="ico"').string.should == 
+    parser.urls_to_images(:wrap_with => ['<p>', '</p>'], :html_options => 'class="ico"').string.should ==
       'Hello, this is my photo<p><img src="https://image.com/image.jpg" alt="" class="ico"/> </p>yeah baby'
   end
 
@@ -64,7 +64,7 @@ describe StringMaster do
     parser = StringMaster.new('Hello, this is my homepage http://url.com, yeah baby')
     parser.urls_to_links.string.should ==
       'Hello, this is my homepage <a href="http://url.com" >http://url.com</a>, yeah baby'
-    
+
     # example 2
     parser = StringMaster.new("http://localhost:3000/\nhttp://localhost:3000/")
     parser.urls_to_links.string.should ==
@@ -141,6 +141,18 @@ WRAPPED_CODE
     long_string = '<img src="image.gif" alt="looooooooooooongalt"/>'
     parser = StringMaster.new(long_string)
     parser.break_long_words(5).string.should == '<img src="image.gif" alt="looooooooooooongalt"/>'
+  end
+
+  it "handles http links when attempt to break long words" do
+    string_with_long_link = 'some text http://verylonglink.com other text'
+    parser = StringMaster.new(string_with_long_link)
+    parser.break_long_words(6).string.should == string_with_long_link
+  end
+
+  it "handles http links when attempt to break long words" do
+    string_with_long_link = 'some text https://verylonglink.com other text'
+    parser = StringMaster.new(string_with_long_link)
+    parser.break_long_words(6).string.should == string_with_long_link
   end
 
   it "cuts too long string and appends (if specified) characters to its end" do
