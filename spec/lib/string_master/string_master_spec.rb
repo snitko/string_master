@@ -59,24 +59,112 @@ describe StringMaster do
       'Hello, this is my photo<p><img src="https://image.com/image.jpg" alt="" class="ico"/> </p>yeah baby'
   end
 
-  it "makes links of urls" do
-    # example 1
-    parser = StringMaster.new('Hello, this is my homepage http://url.com, yeah baby')
-    parser.urls_to_links.string.should ==
-      'Hello, this is my homepage <a href="http://url.com" >http://url.com</a>, yeah baby'
+  describe 'makes links of urls' do
+    # ascii_only option - show URLs with warning about contain non-latin characters
+    describe 'without ascii_only validate' do
+      # example 1
+      it 'when text include url' do
+        parser = StringMaster.new('Hello, this is my homepage http://url.com, yeah baby')
+        parser.urls_to_links(ascii_only: false).string.should ==
+          'Hello, this is my homepage <a href="http://url.com" >http://url.com</a>, yeah baby'
+      end
 
-    # example 2
-    parser = StringMaster.new("http://localhost:3000/\nhttp://localhost:3000/")
-    parser.urls_to_links.string.should ==
-      "<a href=\"http://localhost:3000/\" >http://localhost:3000/</a>\n<a href=\"http://localhost:3000/\" >http://localhost:3000/</a>"
+      # example 2
+      it 'when text have several urls' do
+        parser = StringMaster.new("http://localhost:3000/\nhttp://localhost:3000/")
+        parser.urls_to_links(ascii_only: false).string.should ==
+          "<a href=\"http://localhost:3000/\" >http://localhost:3000/</a>\n<a href=\"http://localhost:3000/\" >http://localhost:3000/</a>"
+      end
 
-    # example 3
-    parser = StringMaster.new('http://gyazo.com/a4c16e7a6009f40f29248ad4fed41bd3.png<br>')
-    parser.urls_to_links.string.should == '<a href="http://gyazo.com/a4c16e7a6009f40f29248ad4fed41bd3.png" >http://gyazo.com/a4c16e7a6009f40f29248ad4fed41bd3.png</a><br>'
+      # example 3
+      it 'when text have html tag and url' do
+        parser = StringMaster.new('http://gyazo.com/a4c16e7a6009f40f29248ad4fed41bd3.png<br>')
+        parser.urls_to_links(ascii_only: false).string.should == '<a href="http://gyazo.com/a4c16e7a6009f40f29248ad4fed41bd3.png" >http://gyazo.com/a4c16e7a6009f40f29248ad4fed41bd3.png</a><br>'
+      end
 
-    # example 4, with https
-    parser = StringMaster.new('https://gyazo.com/a4c16e7a6009f40f29248ad4fed41bd3.png<br>')
-    parser.urls_to_links.string.should == '<a href="https://gyazo.com/a4c16e7a6009f40f29248ad4fed41bd3.png" >https://gyazo.com/a4c16e7a6009f40f29248ad4fed41bd3.png</a><br>'
+      # example 4, with https
+      it 'when text include https and url' do
+        parser = StringMaster.new('https://gyazo.com/a4c16e7a6009f40f29248ad4fed41bd3.png<br>')
+        parser.urls_to_links(ascii_only: false).string.should == '<a href="https://gyazo.com/a4c16e7a6009f40f29248ad4fed41bd3.png" >https://gyazo.com/a4c16e7a6009f40f29248ad4fed41bd3.png</a><br>'
+      end
+
+      describe 'when url contain non-latin characters and' do
+
+        it "warning message doesn't shows" do
+          parser = StringMaster.new('http://url.cоm')
+          parser.urls_to_links(ascii_only: false).string.should_not ==
+            '[WARNING, URL CONTAINS NON-LATIN LETTERS: http://url.cоm]'
+        end
+
+        it "non-latin url shows like a url with latin only characters" do
+          parser = StringMaster.new('http://url.cоm')
+          parser.urls_to_links(ascii_only: false).string.should ==
+            '<a href="http://url.cоm" >http://url.cоm</a>'
+        end
+      end
+    end
+
+    describe 'with ascii_only validate' do
+      # example 1
+      it 'show warning when text include non-latin url' do
+        parser = StringMaster.new('Hello, this is my homepage http://url.cоm, yeah baby')
+        parser.urls_to_links(ascii_only: true).string.should ==
+          'Hello, this is my homepage [WARNING, URL CONTAINS NON-LATIN LETTERS: http://url.cоm], yeah baby'
+      end
+
+      # example 2
+      it 'show warning when text have several non-latin urls' do
+        parser = StringMaster.new("http://lоcalhost:3000\nhttp://lоcalhost:3000")
+        parser.urls_to_links(ascii_only: true).string.should ==
+          "[WARNING, URL CONTAINS NON-LATIN LETTERS: http://lоcalhost:3000]\n[WARNING, URL CONTAINS NON-LATIN LETTERS: http://lоcalhost:3000]"
+      end
+
+      # example 3
+      it 'show warning when text have html tag and non-latin url' do
+        parser = StringMaster.new('http://gyаzo.com/a4c16e7a6009f40f29248ad4fed41bd3.png<br>')
+        parser.urls_to_links(ascii_only: true).string.should == '[WARNING, URL CONTAINS NON-LATIN LETTERS: http://gyаzo.com/a4c16e7a6009f40f29248ad4fed41bd3.png]<br>'
+      end
+
+      # example 4, with https
+      it 'show warning when text include https and non-latin url' do
+        parser = StringMaster.new('https://gyаzo.com/a4c16e7a6009f40f29248ad4fed41bd3.png<br>')
+        parser.urls_to_links(ascii_only: true).string.should == '[WARNING, URL CONTAINS NON-LATIN LETTERS: https://gyаzo.com/a4c16e7a6009f40f29248ad4fed41bd3.png]<br>'
+      end
+
+      describe 'when url contain latin characters and' do
+        it "warning message doesn't shows" do
+          parser = StringMaster.new('http://url.com')
+          parser.urls_to_links(ascii_only: true).string.should_not ==
+            '[WARNING, URL CONTAINS NON-LATIN LETTERS: http://url.cоm]'
+        end
+
+        it "latin url shows correct" do
+          parser = StringMaster.new('http://url.com')
+          parser.urls_to_links(ascii_only: true).string.should ==
+            "<a href='http://url.com'>http://url.com</a>"
+        end
+      end
+
+      describe 'when text contain' do
+        it 'non-latin symbols and latin url' do
+          parser = StringMaster.new('тест http://url.com')
+          parser.urls_to_links(ascii_only: true).string.should ==
+            "тест <a href='http://url.com'>http://url.com</a>"
+        end
+
+        it 'both symbol types and non-latin url' do
+          parser = StringMaster.new('тест non-latin url http://url.cоm')
+          parser.urls_to_links(ascii_only: true).string.should ==
+            "тест non-latin url [WARNING, URL CONTAINS NON-LATIN LETTERS: http://url.cоm]"
+        end
+
+        it 'both symbol types both url types' do
+          parser = StringMaster.new('тест non-latin url http://url.cоm и тест only-latin url https://url.com')
+          parser.urls_to_links(ascii_only: true).string.should ==
+            "тест non-latin url [WARNING, URL CONTAINS NON-LATIN LETTERS: http://url.cоm] и тест only-latin url <a href='https://url.com'>https://url.com</a>"
+        end
+      end
+    end
   end
 
   it "wraps code in <code> tags" do
