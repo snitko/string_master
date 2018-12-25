@@ -67,10 +67,16 @@ class StringMaster
   def urls_to_links(options = {})
     wrap_with = options[:wrap_with] || ['','']
     html_options = options[:html_options] || ''
-    @modified_string.gsub!(
-      /(\s|^|\A|\n|\t|\r)((http|https):\/\/.*?)([,.])?(\s|$|\n|\Z|\t|\r|<)/,
-      '\1<a href="\2" ' + html_options + '>\2</a>\4\5'
-    )
+
+    # ascii_only option - show URLs with warning about contain non-latin characters
+    if options[:ascii_only]
+      validate_url_contains_ascii(@modified_string, html_options, wrap_with)
+    else
+      @modified_string.gsub!(
+          /(\s|^|\A|\n|\t|\r)((http|https):\/\/.*?)([,.])?(\s|$|\n|\Z|\t|\r|<)/,
+          '\1<a href="\2" ' + html_options + '>\2</a>\4\5'
+      )
+    end
     self
   end
 
@@ -177,5 +183,18 @@ class StringMaster
     modified_string.html_safe
   end
 
-end
+  private
 
+  # Checking references for the presence of non-latin characters. If such
+  # characters are found, the link will not be displayed like html link.
+  # Instead of it, will be returned a warning message.
+  def validate_url_contains_ascii(string, html_options, wrap_with)
+    string.gsub!(/((http|https)[^<\s,]{7,}\b)/im) do |link|
+      if link.ascii_only?
+        "<a href='#{link}'#{html_options}>#{link}</a>"
+      else
+        "[WARNING, URL CONTAINS NON-LATIN LETTERS: #{link}]"
+      end
+    end
+  end
+end
